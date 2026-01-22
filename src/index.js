@@ -1,9 +1,11 @@
 import express from "express";
+import cors from "cors";
 import db from "./models/index.js";
 import userRoute from "./routes/user.route.js";
 import workoutRoute from "./routes/workout.route.js";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 db.sequelize.sync()
