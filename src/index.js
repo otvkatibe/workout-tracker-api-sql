@@ -18,7 +18,7 @@ app.use("/users", userRoute);
 app.use("/workouts", workoutRoute);
 
 app.get("/", (req, res) => {
-    res.send("EXPRESS BACKEND COM POSTGRESQL");
+    res.send("Welcome to the Workout Tracker API");
 });
 
 const PORT = process.env.PORT || 3000;
