@@ -1,6 +1,6 @@
 import db from '../models/index.js';
 
-const Workout = db.Workout;
+const Workout = db.workouts;
 
 export const createWorkout = async (data) => {
     return await Workout.create(data);
