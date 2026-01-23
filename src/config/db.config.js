@@ -2,6 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Determina se SSL deve ser usado baseado na variável de ambiente
+// Docker local: POSTGRES_SSL=false | Neon/Vercel: POSTGRES_SSL=true
+const useSSL = process.env.POSTGRES_SSL === 'true';
+
 const dbConfig = {
     host: process.env.POSTGRES_HOST,
     user: process.env.POSTGRES_USER,
@@ -9,12 +13,12 @@ const dbConfig = {
     database: process.env.POSTGRES_DATABASE,
     port: process.env.POSTGRES_PORT,
     dialect: 'postgres',
-    dialectOptions: {
+    dialectOptions: useSSL ? {
         ssl: {
             require: true,
             rejectUnauthorized: false
         }
-    },
+    } : {},
     pool: {
         max: 2,
         min: 0,

@@ -13,3 +13,7 @@ export const createUser = async (userData) => {
 export const findUserByUsername = async (username) => {
     return await User.findOne({ where: { username } });
 };
+
+export const findUserByEmail = async (email) => {
+    return await User.findOne({ where: { email } });
+};

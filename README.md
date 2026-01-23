@@ -7,6 +7,8 @@
 
 API RESTful para gerenciamento de treinos com autenticação JWT, desenvolvida com Node.js, Express e PostgreSQL.
 
+---
+
 ## Stack
 
 | Camada | Tecnologia |
@@ -50,9 +52,10 @@ POSTGRES_PASSWORD=postgres
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_DATABASE=postgres
+POSTGRES_SSL=false
 ```
 
-> 💡 Use `npm run generate-secret-key` para gerar uma chave JWT segura.
+> Use `npm run generate-secret-key` para gerar uma chave JWT segura.
 
 ## API Endpoints
 
@@ -73,7 +76,7 @@ POSTGRES_DATABASE=postgres
 | PUT | `/workouts/:id` | Atualizar treino |
 | DELETE | `/workouts/:id` | Remover treino |
 
-> 🔐 Endpoints de treinos requerem header `Authorization: Bearer <token>`
+> Endpoints de treinos requerem header `Authorization: Bearer <token>`
 
 ## Uso
 
@@ -131,4 +134,4 @@ Este projeto está sob a licença [ISC](LICENSE).
 
 ---
 
-Desenvolvido por [@otvkatibe](https://github.com/otvkatibe)
+Desenvolvido por **otvkatibe**
