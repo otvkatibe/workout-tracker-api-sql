@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { findUserByUsername, createUser} from '../services/user.service.js';
+import { findUserByUsername, findUserByEmail, createUser } from '../services/user.service.js';
 import jwt from 'jsonwebtoken';
 
 const register = async (req, res) => {
@@ -41,37 +41,37 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     console.log("Logging in user:", req.body);
-    if (!req.body || !req.body.username || !req.body.email || !req.body.password) {
-        return res.status(400).json({ message: 'username, email and password are required' });
-    }
 
-    const { username, email, password } = req.body;
+    const { email, password, username } = req.body;
 
+    // Aceita login com email+password OU username+password
     if ((!email && !username) || !password) {
-        console.log("Email or username, and password are required", email, username);
-        return res.status(400).json({ message: 'Email and password are required' });
+        return res.status(400).json({ message: 'Email (ou username) e password são obrigatórios' });
     }
 
     try {
-        const user = await findUserByUsername(username);
-        if (!user) {
-            console.log("User not found", username);
-            return res.status(404).json({ message: 'User not found' });
+        let user;
+
+        // Busca por email ou username
+        if (email) {
+            user = await findUserByEmail(email);
+        } else if (username) {
+            user = await findUserByUsername(username);
         }
 
-        if (email && user.email !== email) {
-            console.log("Email does not match the registered email for this user:", username);
-            return res.status(401).json({ message: 'Invalid email' });
+        if (!user) {
+            console.log("User not found", email || username);
+            return res.status(404).json({ message: 'Usuário não encontrado' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         console.log("Password match:", isMatch);
         if (!isMatch) {
-            console.log("Invalid password for this user", username);
-            return res.status(401).json({ message: 'Invalid password' });
+            console.log("Invalid password for this user", email || username);
+            return res.status(401).json({ message: 'Senha inválida' });
         }
 
-        console.log("User logged in successfully", username);
+        console.log("User logged in successfully", user.username);
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
@@ -80,7 +80,7 @@ const login = async (req, res) => {
     }
 }
 
-export default { 
+export default {
     register,
     login
 };
