@@ -33,7 +33,6 @@ export default (sequelize, Sequelize) => {
             allowNull: false,
             validate: {
                 isDate: { msg: 'A data deve ser uma data válida' },
-                isAfter: { args: new Date().toISOString(), msg: 'A data deve ser futura' },
             },
         },
     });
