@@ -68,10 +68,9 @@ export const getWorkouts = async (req, res) => {
 };
 
 export const getWorkout = async (req, res) => {
+    const { id: userId } = req.user;
+    const { id } = req.params;
     try {
-        const { id: userId } = req.user;
-        const { id } = req.params;
-
         if (!isUUID(id)) {
             return res.status(400).json({ message: 'ID inválido.' });
         }
@@ -81,7 +80,7 @@ export const getWorkout = async (req, res) => {
             return res.status(404).json({ message: 'Treino não encontrado ou não pertence ao usuário.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Treino encontrado.`);
+        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Treino recuperado com sucesso.`);
         res.status(200).json(workout);
     } catch (error) {
         console.error(`[ERRO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Erro: ${error.message}`);
@@ -132,10 +131,9 @@ export const updateWorkout = async (req, res) => {
 };*/
 
 export const deleteWorkout = async (req, res) => {
+    const { id: userId } = req.user;
+    const { id } = req.params;
     try {
-        const { id: userId } = req.user;
-        const { id } = req.params;
-
         if (!isUUID(id)) {
             return res.status(400).json({ message: 'ID inválido.' });
         }
@@ -146,7 +144,7 @@ export const deleteWorkout = async (req, res) => {
         }
 
         await workoutService.deleteWorkout(id, userId);
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Treino removido.`);
+        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Treino removido com sucesso.`);
         res.status(200).json({ message: 'Treino removido com sucesso.' });
     } catch (error) {
         console.error(`[ERRO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Erro: ${error.message}`);
