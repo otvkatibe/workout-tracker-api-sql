@@ -81,10 +81,10 @@ export const getWorkout = async (req, res) => {
             return res.status(404).json({ message: 'Treino não encontrado ou não pertence ao usuário.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: ${endpoint} - ${message}`);
+        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Treino encontrado.`);
         res.status(200).json(workout);
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: ${endpoint} - Erro: ${error.message}`);
+        console.error(`[ERRO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Erro: ${error.message}`);
         res.status(500).json({ message: 'Erro interno ao buscar treino.' });
     }
 };
@@ -146,10 +146,10 @@ export const deleteWorkout = async (req, res) => {
         }
 
         await workoutService.deleteWorkout(id, userId);
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: ${endpoint} - ${message}`);
+        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Treino removido.`);
         res.status(200).json({ message: 'Treino removido com sucesso.' });
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: ${endpoint} - Erro: ${error.message}`);
+        console.error(`[ERRO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${id} - Erro: ${error.message}`);
         res.status(500).json({ message: 'Erro interno ao remover treino.' });
     }
 };
