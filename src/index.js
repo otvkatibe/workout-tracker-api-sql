@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import db from "./models/index.js";
+import db from "./models/index.model.js";
 import userRoute from "./routes/user.route.js";
 import workoutRoute from "./routes/workout.route.js";
 
