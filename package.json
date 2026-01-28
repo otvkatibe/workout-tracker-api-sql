@@ -1,6 +1,6 @@
 {
   "name": "workout-tracker-api",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A RESTful API for tracking workouts and exercises.",
   "main": "src/index.js",
   "type": "module",
