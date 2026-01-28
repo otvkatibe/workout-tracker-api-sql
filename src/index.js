@@ -3,6 +3,7 @@ import cors from "cors";
 import db from "./models/index.model.js";
 import userRoute from "./routes/user.route.js";
 import workoutRoute from "./routes/workout.route.js";
+import exerciseRoute from "./routes/exercise.route.js";
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ db.sequelize.sync()
 
 app.use("/users", userRoute);
 app.use("/workouts", workoutRoute);
+app.use("/exercises", exerciseRoute);
 
 app.get("/", (req, res) => {
     res.send("Welcome to the Workout Tracker API");
