@@ -1,6 +1,6 @@
 {
   "name": "workout-tracker-api",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "A RESTful API for tracking workouts and exercises.",
   "main": "src/index.js",
   "type": "module",
@@ -8,13 +8,16 @@
     "start:app": "nodemon src/index.js",
     "start:database": "docker-compose up -d",
     "stop:database": "docker-compose down",
-    "generate-secret-key": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
+    "generate-secret-key": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
@@ -23,6 +26,13 @@
     "sequelize": "^6.37.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^15.15.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.8.1"
   }
 }

@@ -6,10 +6,7 @@ const { Op } = db.Sequelize;
 export const getExercises = async (userId, filters = {}) => {
     const where = {
         isActive: true,
-        [Op.or]: [
-            { userId: null },
-            { userId: userId }
-        ]
+        [Op.or]: [{ userId: null }, { userId }]
     };
 
     if (filters.muscleGroup) {
@@ -25,29 +22,28 @@ export const getExercises = async (userId, filters = {}) => {
         where.name = { [Op.iLike]: `%${filters.name}%` };
     }
 
-    return await Exercise.findAll({ where, order: [['name', 'ASC']] });
+    return Exercise.findAll({ where, order: [['name', 'ASC']] });
 };
 
-export const getExerciseById = async (id) => {
-    return await Exercise.findByPk(id);
-};
+export const getExerciseById = async (id) => Exercise.findByPk(id);
 
-export const createExercise = async (userId, data) => {
-    return await Exercise.create({
+export const createExercise = async (userId, data) =>
+    Exercise.create({
         ...data,
-        userId: userId,
+        userId,
         isActive: true
     });
-};
 
 export const updateExercise = async (id, userId, data) => {
     const exercise = await Exercise.findOne({
         where: { id, userId }
     });
 
-    if (!exercise) return null;
+    if (!exercise) {
+        return null;
+    }
 
-    return await exercise.update(data);
+    return exercise.update(data);
 };
 
 export const deleteExercise = async (id, userId) => {
@@ -55,7 +51,9 @@ export const deleteExercise = async (id, userId) => {
         where: { id, userId }
     });
 
-    if (!exercise) return null;
+    if (!exercise) {
+        return null;
+    }
 
     await exercise.update({ isActive: false });
     return exercise;
@@ -68,35 +66,35 @@ export const importFromExternalApi = async (exercisesData, userId = null) => {
         const existingExercise = await Exercise.findOne({
             where: {
                 name: exerciseData.name,
-                [Op.or]: [{ userId: null }, { userId: userId }]
+                [Op.or]: [{ userId: null }, { userId }]
             }
         });
 
         if (!existingExercise) {
             const muscleGroupMap = {
-                'chest': 'chest',
-                'back': 'back',
-                'shoulders': 'shoulders',
-                'biceps': 'arms',
-                'triceps': 'arms',
-                'forearms': 'arms',
-                'quadriceps': 'legs',
-                'hamstrings': 'legs',
-                'calves': 'legs',
-                'glutes': 'legs',
-                'abdominals': 'core',
-                'lower_back': 'core',
-                'middle_back': 'back',
-                'neck': 'shoulders',
-                'traps': 'back',
-                'lats': 'back',
-                'cardio': 'cardio'
+                chest: 'chest',
+                back: 'back',
+                shoulders: 'shoulders',
+                biceps: 'arms',
+                triceps: 'arms',
+                forearms: 'arms',
+                quadriceps: 'legs',
+                hamstrings: 'legs',
+                calves: 'legs',
+                glutes: 'legs',
+                abdominals: 'core',
+                lower_back: 'core',
+                middle_back: 'back',
+                neck: 'shoulders',
+                traps: 'back',
+                lats: 'back',
+                cardio: 'cardio'
             };
 
             const difficultyMap = {
-                'beginner': 'beginner',
-                'intermediate': 'intermediate',
-                'expert': 'advanced'
+                beginner: 'beginner',
+                intermediate: 'intermediate',
+                expert: 'advanced'
             };
 
             const newExercise = await Exercise.create({
@@ -106,7 +104,7 @@ export const importFromExternalApi = async (exercisesData, userId = null) => {
                 difficulty: difficultyMap[exerciseData.difficulty] || 'beginner',
                 instructions: exerciseData.instructions,
                 externalId: exerciseData.name.toLowerCase().replace(/\s+/g, '-'),
-                userId: userId,
+                userId,
                 isActive: true
             });
 

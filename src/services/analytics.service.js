@@ -1,13 +1,11 @@
+import { Op } from 'sequelize';
 import db from '../models/index.model.js';
-import { Op, fn, col, literal } from 'sequelize';
 
 const WorkoutSet = db.workoutSets;
 const Workout = db.workouts;
 const Exercise = db.exercises;
 
-const calculate1RM = (weight, reps) => {
-    return weight * (1 + reps / 30);
-};
+const calculate1RM = (weight, reps) => weight * (1 + reps / 30);
 
 export const getProgressionByExercise = async (userId, exerciseId, period = 30) => {
     const startDate = new Date();
@@ -15,24 +13,27 @@ export const getProgressionByExercise = async (userId, exerciseId, period = 30) 
 
     const sets = await WorkoutSet.findAll({
         attributes: ['weight', 'reps', 'rpe', 'createdAt'],
-        include: [{
-            model: Workout,
-            as: 'workout',
-            attributes: ['date'],
-            where: {
-                userId,
-                date: { [Op.gte]: startDate }
+        include: [
+            {
+                model: Workout,
+                as: 'workout',
+                attributes: ['date'],
+                where: {
+                    userId,
+                    date: { [Op.gte]: startDate }
+                }
+            },
+            {
+                model: Exercise,
+                as: 'exercise',
+                attributes: ['id', 'name'],
+                where: { id: exerciseId }
             }
-        }, {
-            model: Exercise,
-            as: 'exercise',
-            attributes: ['id', 'name'],
-            where: { id: exerciseId }
-        }],
+        ],
         order: [['createdAt', 'ASC']]
     });
 
-    const progression = sets.map(set => ({
+    const progression = sets.map((set) => ({
         date: set.workout.date,
         weight: parseFloat(set.weight),
         reps: set.reps,
@@ -51,24 +52,26 @@ export const getProgressionByExercise = async (userId, exerciseId, period = 30) 
 
 export const getWeeklyVolume = async (userId, weeks = 4) => {
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - (weeks * 7));
+    startDate.setDate(startDate.getDate() - weeks * 7);
 
     const workouts = await Workout.findAll({
         where: {
             userId,
             date: { [Op.gte]: startDate }
         },
-        include: [{
-            model: WorkoutSet,
-            as: 'sets',
-            attributes: ['reps', 'weight']
-        }],
+        include: [
+            {
+                model: WorkoutSet,
+                as: 'sets',
+                attributes: ['reps', 'weight']
+            }
+        ],
         order: [['date', 'ASC']]
     });
 
     const weeklyData = {};
 
-    workouts.forEach(workout => {
+    workouts.forEach((workout) => {
         const workoutDate = new Date(workout.date);
         const weekStart = new Date(workoutDate);
         weekStart.setDate(workoutDate.getDate() - workoutDate.getDay());
@@ -85,13 +88,13 @@ export const getWeeklyVolume = async (userId, weeks = 4) => {
 
         weeklyData[weekKey].workouts++;
 
-        workout.sets.forEach(set => {
+        workout.sets.forEach((set) => {
             weeklyData[weekKey].volume += set.reps * parseFloat(set.weight);
             weeklyData[weekKey].totalSets++;
         });
     });
 
-    const volumeByWeek = Object.values(weeklyData).map(week => ({
+    const volumeByWeek = Object.values(weeklyData).map((week) => ({
         ...week,
         volume: Math.round(week.volume * 10) / 10
     }));
@@ -107,21 +110,24 @@ export const getWeeklyVolume = async (userId, weeks = 4) => {
 export const getPersonalRecords = async (userId) => {
     const sets = await WorkoutSet.findAll({
         attributes: ['weight', 'reps'],
-        include: [{
-            model: Workout,
-            as: 'workout',
-            attributes: ['date'],
-            where: { userId }
-        }, {
-            model: Exercise,
-            as: 'exercise',
-            attributes: ['id', 'name', 'muscleGroup']
-        }]
+        include: [
+            {
+                model: Workout,
+                as: 'workout',
+                attributes: ['date'],
+                where: { userId }
+            },
+            {
+                model: Exercise,
+                as: 'exercise',
+                attributes: ['id', 'name', 'muscleGroup']
+            }
+        ]
     });
 
     const prByExercise = {};
 
-    sets.forEach(set => {
+    sets.forEach((set) => {
         const exerciseId = set.exercise.id;
         const weight = parseFloat(set.weight);
         const estimated1RM = calculate1RM(weight, set.reps);
@@ -133,7 +139,7 @@ export const getPersonalRecords = async (userId) => {
                 muscleGroup: set.exercise.muscleGroup,
                 maxWeight: weight,
                 maxWeightReps: set.reps,
-                estimated1RM: estimated1RM,
+                estimated1RM,
                 prDate: set.workout.date
             };
         } else if (estimated1RM > prByExercise[exerciseId].estimated1RM) {
@@ -141,13 +147,13 @@ export const getPersonalRecords = async (userId) => {
                 ...prByExercise[exerciseId],
                 maxWeight: weight,
                 maxWeightReps: set.reps,
-                estimated1RM: estimated1RM,
+                estimated1RM,
                 prDate: set.workout.date
             };
         }
     });
 
-    const records = Object.values(prByExercise).map(pr => ({
+    const records = Object.values(prByExercise).map((pr) => ({
         ...pr,
         estimated1RM: Math.round(pr.estimated1RM * 10) / 10
     }));
@@ -174,7 +180,7 @@ export const getWorkoutFrequency = async (userId, period = 30) => {
     const dayOfWeekCount = [0, 0, 0, 0, 0, 0, 0];
     const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
-    workouts.forEach(workout => {
+    workouts.forEach((workout) => {
         const dayOfWeek = new Date(workout.date).getDay();
         dayOfWeekCount[dayOfWeek]++;
     });
@@ -192,6 +198,9 @@ export const getWorkoutFrequency = async (userId, period = 30) => {
         totalWorkouts,
         averagePerWeek: Math.round((totalWorkouts / weeksInPeriod) * 10) / 10,
         frequencyByDay,
-        mostActiveDay: frequencyByDay.reduce((max, day) => day.count > max.count ? day : max, frequencyByDay[0])
+        mostActiveDay: frequencyByDay.reduce(
+            (max, day) => (day.count > max.count ? day : max),
+            frequencyByDay[0]
+        )
     };
 };
