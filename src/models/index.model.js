@@ -4,7 +4,7 @@ import dbConfig from '../config/db.config.js';
 import User from './user.model.js';
 import Workout from './workout.model.js';
 import Exercise from './exercise.model.js';
-import WorkoutSet from './workoutSet.model.js';
+import WorkoutSet from './workoutset.model.js';
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
