@@ -1,26 +1,19 @@
 # Workout Tracker API
 
 [![Node.js](https://img.shields.io/badge/Node.js-v20+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-v4.21-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![Express](https://img.shields.io/badge/Express-v5.2-000000?logo=express&logoColor=white)](https://expressjs.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![ESLint](https://img.shields.io/badge/ESLint-9.39-4B32C3?logo=eslint&logoColor=white)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Prettier-3.8-F7B93E?logo=prettier&logoColor=black)](https://prettier.io/)
 [![License](https://img.shields.io/badge/License-ISC-blue)](LICENSE)
+[![Sequelize](https://img.shields.io/badge/Sequelize-6.37-52B0E7?logo=sequelize&logoColor=white)](https://sequelize.org/)
+[![JWT](https://img.shields.io/badge/JWT-Auth-000000?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Nodemon](https://img.shields.io/badge/Nodemon-Dev-76D04B?logo=nodemon&logoColor=white)](https://nodemon.io/)
 
 API RESTful para gerenciamento de treinos com autenticação JWT, sobrecarga progressiva e analytics, desenvolvida com Node.js, Express e PostgreSQL.
 
 ---
-
-## Stack
-
-| Camada | Tecnologia |
-| --- | --- |
-| Runtime | Node.js 20+ |
-| Framework | Express 4.21 |
-| ORM | Sequelize 6 |
-| Banco de Dados | PostgreSQL |
-| Autenticação | JWT + bcrypt |
-| Linting | ESLint 9 + Prettier |
 
 ## Instalação
 
