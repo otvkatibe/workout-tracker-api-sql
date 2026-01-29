@@ -9,33 +9,42 @@ export const getSetsByWorkout = async (workoutId, userId) => {
         where: { id: workoutId, userId }
     });
 
-    if (!workout) return null;
+    if (!workout) {
+        return null;
+    }
 
-    return await WorkoutSet.findAll({
+    return WorkoutSet.findAll({
         where: { workoutId },
-        include: [{
-            model: Exercise,
-            as: 'exercise',
-            attributes: ['id', 'name', 'muscleGroup', 'equipment']
-        }],
+        include: [
+            {
+                model: Exercise,
+                as: 'exercise',
+                attributes: ['id', 'name', 'muscleGroup', 'equipment']
+            }
+        ],
         order: [['setNumber', 'ASC']]
     });
 };
 
 export const getSetById = async (setId, userId) => {
     const set = await WorkoutSet.findByPk(setId, {
-        include: [{
-            model: Workout,
-            as: 'workout',
-            attributes: ['id', 'userId']
-        }, {
-            model: Exercise,
-            as: 'exercise',
-            attributes: ['id', 'name', 'muscleGroup']
-        }]
+        include: [
+            {
+                model: Workout,
+                as: 'workout',
+                attributes: ['id', 'userId']
+            },
+            {
+                model: Exercise,
+                as: 'exercise',
+                attributes: ['id', 'name', 'muscleGroup']
+            }
+        ]
     });
 
-    if (!set || set.workout.userId !== userId) return null;
+    if (!set || set.workout.userId !== userId) {
+        return null;
+    }
 
     return set;
 };
@@ -45,10 +54,14 @@ export const createSet = async (workoutId, userId, data) => {
         where: { id: workoutId, userId }
     });
 
-    if (!workout) return null;
+    if (!workout) {
+        return null;
+    }
 
     const exercise = await Exercise.findByPk(data.exerciseId);
-    if (!exercise) return null;
+    if (!exercise) {
+        return null;
+    }
 
     const lastSet = await WorkoutSet.findOne({
         where: { workoutId },
@@ -57,7 +70,7 @@ export const createSet = async (workoutId, userId, data) => {
 
     const setNumber = lastSet ? lastSet.setNumber + 1 : 1;
 
-    return await WorkoutSet.create({
+    return WorkoutSet.create({
         workoutId,
         exerciseId: data.exerciseId,
         setNumber,
@@ -71,20 +84,26 @@ export const createSet = async (workoutId, userId, data) => {
 export const updateSet = async (setId, userId, data) => {
     const set = await getSetById(setId, userId);
 
-    if (!set) return null;
+    if (!set) {
+        return null;
+    }
 
     if (data.exerciseId) {
         const exercise = await Exercise.findByPk(data.exerciseId);
-        if (!exercise) return null;
+        if (!exercise) {
+            return null;
+        }
     }
 
-    return await set.update(data);
+    return set.update(data);
 };
 
 export const deleteSet = async (setId, userId) => {
     const set = await getSetById(setId, userId);
 
-    if (!set) return null;
+    if (!set) {
+        return null;
+    }
 
     await set.destroy();
     return set;
@@ -95,7 +114,9 @@ export const bulkCreateSets = async (workoutId, userId, setsArray) => {
         where: { id: workoutId, userId }
     });
 
-    if (!workout) return null;
+    if (!workout) {
+        return null;
+    }
 
     const lastSet = await WorkoutSet.findOne({
         where: { workoutId },
@@ -107,7 +128,9 @@ export const bulkCreateSets = async (workoutId, userId, setsArray) => {
 
     for (const setData of setsArray) {
         const exercise = await Exercise.findByPk(setData.exerciseId);
-        if (!exercise) continue;
+        if (!exercise) {
+            continue;
+        }
 
         const newSet = await WorkoutSet.create({
             workoutId,

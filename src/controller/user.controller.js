@@ -1,22 +1,22 @@
 import bcrypt from 'bcrypt';
-import { findUserByUsername, findUserByEmail, createUser } from '../services/user.service.js';
 import jwt from 'jsonwebtoken';
+import { findUserByUsername, findUserByEmail, createUser } from '../services/user.service.js';
 
 const register = async (req, res) => {
-    console.log("Registering user:", req.body);
+    console.log('Registering user:', req.body);
     if (!req.body || !req.body.username || !req.body.email || !req.body.password) {
         return res.status(400).json({ message: 'username, email and password are required' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(req.body.email)) {
-        console.log("Invalid email format:", req.body.email);
+        console.log('Invalid email format:', req.body.email);
         return res.status(400).json({ message: 'Invalid email format' });
     }
 
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
-        console.error("Invalid password format:", req.body.password);
+        console.error('Invalid password format:', req.body.password);
         return res.status(400).json({ message: 'Invalid password format.' });
     }
 
@@ -29,18 +29,18 @@ const register = async (req, res) => {
         const savedUser = await createUser({
             username,
             email,
-            password: hashedPassword,
+            password: hashedPassword
         });
-        console.log("User saved:", savedUser);
+        console.log('User saved:', savedUser);
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        console.error("Error saving user:", error);
+        console.error('Error saving user:', error);
         return res.status(500).json({ message: `Error saving user: ${error}` });
     }
 };
 
 const login = async (req, res) => {
-    console.log("Logging in user:", req.body);
+    console.log('Logging in user:', req.body);
 
     const { email, password, username } = req.body;
 
@@ -60,25 +60,25 @@ const login = async (req, res) => {
         }
 
         if (!user) {
-            console.log("User not found", email || username);
+            console.log('User not found', email || username);
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log("Password match:", isMatch);
+        console.log('Password match:', isMatch);
         if (!isMatch) {
-            console.log("Invalid password for this user", email || username);
+            console.log('Invalid password for this user', email || username);
             return res.status(401).json({ message: 'Senha inválida' });
         }
 
-        console.log("User logged in successfully", user.username);
+        console.log('User logged in successfully', user.username);
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
-        console.error("Error logging in user:", error);
+        console.error('Error logging in user:', error);
         return res.status(500).json({ message: `Error logging in user: ${error}` });
     }
-}
+};
 
 export default {
     register,

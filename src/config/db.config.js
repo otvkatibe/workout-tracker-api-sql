@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -13,12 +13,14 @@ const dbConfig = {
     database: process.env.POSTGRES_DATABASE,
     port: process.env.POSTGRES_PORT,
     dialect: 'postgres',
-    dialectOptions: useSSL ? {
-        ssl: {
-            require: true,
-            rejectUnauthorized: false
-        }
-    } : {},
+    dialectOptions: useSSL
+        ? {
+              ssl: {
+                  require: true,
+                  rejectUnauthorized: false
+              }
+          }
+        : {},
     pool: {
         max: 2,
         min: 0,
@@ -28,12 +30,12 @@ const dbConfig = {
     }
 };
 
-console.log("Database Config:", {
+console.log('Database Config:', {
     host: dbConfig.host,
     user: dbConfig.user,
     password: dbConfig.password,
     database: dbConfig.database,
-    port: dbConfig.port,
+    port: dbConfig.port
 });
 
 export default dbConfig;

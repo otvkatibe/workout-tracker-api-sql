@@ -3,7 +3,9 @@ import jwt from 'jsonwebtoken';
 const verifyToken = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];
     if (!token) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Token não fornecido - Endpoint: ${req.originalUrl}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Token não fornecido - Endpoint: ${req.originalUrl}`
+        );
         return res.status(401).json({ message: 'Token não fornecido. Por favor, faça login.' });
     }
 
@@ -12,7 +14,9 @@ const verifyToken = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Token inválido - Endpoint: ${req.originalUrl} - Erro: ${error.message}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Token inválido - Endpoint: ${req.originalUrl} - Erro: ${error.message}`
+        );
         return res.status(401).json({ message: 'Token inválido ou expirado.' });
     }
 };

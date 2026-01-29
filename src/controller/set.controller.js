@@ -1,11 +1,17 @@
-import * as setService from '../services/set.service.js';
 import { validate as isUUID } from 'uuid';
+import * as setService from '../services/set.service.js';
 
 const validateSetData = (body, isCreate = false) => {
     if (isCreate) {
-        if (!body.exerciseId) return 'O campo exerciseId é obrigatório.';
-        if (!body.reps || body.reps < 1) return 'O campo reps deve ser maior que 0.';
-        if (body.weight === undefined || body.weight < 0) return 'O campo weight é obrigatório e deve ser >= 0.';
+        if (!body.exerciseId) {
+            return 'O campo exerciseId é obrigatório.';
+        }
+        if (!body.reps || body.reps < 1) {
+            return 'O campo reps deve ser maior que 0.';
+        }
+        if (body.weight === undefined || body.weight < 0) {
+            return 'O campo weight é obrigatório e deve ser >= 0.';
+        }
     }
 
     if (body.reps !== undefined && (body.reps < 1 || !Number.isInteger(body.reps))) {
@@ -32,13 +38,19 @@ export const listSets = async (req, res) => {
 
         const sets = await setService.getSetsByWorkout(workoutId, userId);
         if (sets === null) {
-            return res.status(404).json({ message: 'Treino não encontrado ou não pertence ao usuário.' });
+            return res
+                .status(404)
+                .json({ message: 'Treino não encontrado ou não pertence ao usuário.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${workoutId}/sets - ${sets.length} séries listadas.`);
+        console.log(
+            `[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${workoutId}/sets - ${sets.length} séries listadas.`
+        );
         res.status(200).json(sets);
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Erro ao listar séries: ${error.message}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Erro ao listar séries: ${error.message}`
+        );
         res.status(500).json({ message: 'Erro ao listar séries.' });
     }
 };
@@ -59,7 +71,9 @@ export const getSet = async (req, res) => {
 
         res.status(200).json(set);
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Erro ao buscar série: ${error.message}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Erro ao buscar série: ${error.message}`
+        );
         res.status(500).json({ message: 'Erro ao buscar série.' });
     }
 };
@@ -83,7 +97,9 @@ export const createSet = async (req, res) => {
             return res.status(404).json({ message: 'Treino ou exercício não encontrado.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${workoutId}/sets - Série criada.`);
+        console.log(
+            `[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${workoutId}/sets - Série criada.`
+        );
         res.status(201).json(set);
     } catch (error) {
         console.error(`[ERRO] ${new Date().toISOString()} - Erro ao criar série: ${error.message}`);
@@ -107,13 +123,19 @@ export const updateSet = async (req, res) => {
 
         const set = await setService.updateSet(id, userId, req.body);
         if (!set) {
-            return res.status(404).json({ message: 'Série não encontrada ou não pertence ao usuário.' });
+            return res
+                .status(404)
+                .json({ message: 'Série não encontrada ou não pertence ao usuário.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /sets/${id} - Série atualizada.`);
+        console.log(
+            `[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /sets/${id} - Série atualizada.`
+        );
         res.status(200).json(set);
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Erro ao atualizar série: ${error.message}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Erro ao atualizar série: ${error.message}`
+        );
         res.status(500).json({ message: 'Erro ao atualizar série.' });
     }
 };
@@ -129,13 +151,19 @@ export const deleteSet = async (req, res) => {
 
         const set = await setService.deleteSet(id, userId);
         if (!set) {
-            return res.status(404).json({ message: 'Série não encontrada ou não pertence ao usuário.' });
+            return res
+                .status(404)
+                .json({ message: 'Série não encontrada ou não pertence ao usuário.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /sets/${id} - Série removida.`);
+        console.log(
+            `[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /sets/${id} - Série removida.`
+        );
         res.status(200).json({ message: 'Série removida com sucesso.' });
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Erro ao remover série: ${error.message}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Erro ao remover série: ${error.message}`
+        );
         res.status(500).json({ message: 'Erro ao remover série.' });
     }
 };
@@ -165,13 +193,17 @@ export const bulkCreateSets = async (req, res) => {
             return res.status(404).json({ message: 'Treino não encontrado.' });
         }
 
-        console.log(`[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${workoutId}/sets/bulk - ${sets.length} séries criadas.`);
+        console.log(
+            `[AÇÃO] ${new Date().toISOString()} - Usuário: ${userId} - Endpoint: /workouts/${workoutId}/sets/bulk - ${sets.length} séries criadas.`
+        );
         res.status(201).json({
             message: `${sets.length} séries criadas com sucesso.`,
             sets
         });
     } catch (error) {
-        console.error(`[ERRO] ${new Date().toISOString()} - Erro ao criar séries em bulk: ${error.message}`);
+        console.error(
+            `[ERRO] ${new Date().toISOString()} - Erro ao criar séries em bulk: ${error.message}`
+        );
         res.status(500).json({ message: 'Erro ao criar séries.' });
     }
 };
